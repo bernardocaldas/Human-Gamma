@@ -1,0 +1,47 @@
+[ trace, env, stem, indir, summary ] = analyse.load_xdata(xid,subject,game,kwargs);
+loading file ../kesh/experiments//s209g2...
+[ analysis, stem, indir ] = analyse.load_gammalysis(xid,subject,game,7);
+loading file ../kesh/analysis/gammalysis/s209g2_w7...
+[ analysis, summary ] = analyse.window_width_agreement(xid,game,subject,kwargs)
+loading file ../kesh/experiments//s209g2...
+loading file ../kesh/analysis/gammalysis/s209g2_w3...
+loading file ../kesh/analysis/gammalysis/s209g2_w5...
+loading file ../kesh/analysis/gammalysis/s209g2_w7...
+loading file ../kesh/analysis/gammalysis/s209g2_w9...
+loading file ../kesh/analysis/gammalysis/s209g2_w11...
+
+analysis = 
+
+              s1: [300x1 logical]
+            s1a1: [300x1 logical]
+            s1a2: [300x1 logical]
+           width: 11
+            daft: [300x1 logical]
+        propdaft: [1x290 double]
+       daftlevel: [1x300 double]
+       proplongs: [1x191 double]
+       choselong: [1x191 double]
+          upinds: [20 34 88 142 195]
+        downinds: [20 34 88 173 281]
+      detectedup: [16 28 84 134 194]
+    detecteddown: [27 36 89 174 282]
+            uprs: [5x1 double]
+          downrs: [5x1 double]
+            upgs: [0.6455 0.5555 0.3404 0.6736 0.8285]
+          downgs: [0.5551 0.5684 0.3384 1 0.4430]
+     polprofiles: {[]  []  [1x300 double]  []  [1x300 double]  []  [1x300 double]  []  [1x300 double]  []  [1x300 double]}
+       agreement: [5x5 double]
+          widths: [3 5 7 9 11]
+
+
+summary = 
+
+       binary: [1x1 struct]
+         when: [1x1 struct]
+       meanrs: [1x1 struct]
+        stdrs: [1x1 struct]
+    transprob: [1x1 struct]
+
+fitness = @(ep) -sum(p1a1)*log(1-ep(1))-sum(p1a2)*log(ep(1))-sum(p2a1)*log(ep(2))-sum(p2a2)*log(1-ep(2));
+[a b c] = utils.fminsearchbnd(fitness,[0.1,0.1]',[0,0]',[0.5,0.5]');
+diary off

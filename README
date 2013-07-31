@@ -1,0 +1,3 @@
+start by looking into scratchpad, in human gamma archive for some examples of code calling.
+
+You may want look at the test_infer_policy in test_analyse.inference package for the top-down analysis code.

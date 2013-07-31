@@ -1,0 +1,2 @@
+compare_inference_like
+generate_synthetic

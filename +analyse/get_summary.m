@@ -1,0 +1,105 @@
+function [ summary ] = get_summary(game, trace )
+
+    % find the transition probabilities and rewards
+    states = trace.states;
+    actions = trace.actions;
+    rewards = trace.rewards;
+    binary.s1 = (states(1:end-1) == 1);
+    binary.s2 = (states(1:end-1) == 2);
+    binary.s1a1 = (binary.s1 & (actions == 1));
+    binary.s1a2 = (binary.s1 & (actions == 2));
+    binary.s2a1 = (binary.s2 & (actions == 1));
+    binary.s2a2 = (binary.s2 & (actions == 2));
+    binary.s1a1s1 = (binary.s1a1 & (states(2:end) == 1));
+    binary.s1a1s2 = (binary.s1a1 & (states(2:end) == 2));
+    binary.s1a2s1 = (binary.s1a2 & (states(2:end) == 1));
+    binary.s1a2s2 = (binary.s1a2 & (states(2:end) == 2));
+    binary.s2a1s1 = (binary.s2a1 & (states(2:end) == 1));
+    binary.s2a2s1 = (binary.s2a2 & (states(2:end) == 1));
+    when.s1 = find(binary.s1);
+    when.s2 = find(binary.s2);
+    when.s1a1 = find(binary.s1a1);
+    when.s1a2 = find(binary.s1a2);
+    when.s2a1 = find(binary.s2a1);
+    when.s2a2 = find(binary.s2a2);
+    when.s1a1s1 = find(binary.s1a1s1);
+    when.s1a1s2 = find(binary.s1a1s2);
+    when.s1a2s1 = find(binary.s1a2s1);
+    when.s1a2s2 = find(binary.s1a2s2);
+    when.s2a1s1 = find(binary.s2a1s1);
+    when.s2a2s1 = find(binary.s2a2s1);
+    meanrs.all = mean(rewards);
+    meanrs.s1 = mean(rewards(when.s1));
+    meanrs.s2 = mean(rewards(when.s2));
+    meanrs.s1a1 = mean(rewards(when.s1a1));
+    meanrs.s1a2 = mean(rewards(when.s1a2));
+    meanrs.s2a1 = mean(rewards(when.s2a1));
+    meanrs.s2a2 = mean(rewards(when.s2a2));
+    meanrs.s1a1s1 = mean(rewards(when.s1a1s1));
+    meanrs.s1a1s2 = mean(rewards(when.s1a1s2));
+    meanrs.s1a2s1 = mean(rewards(when.s1a2s1));
+    meanrs.s1a2s2 = mean(rewards(when.s1a2s2));
+    meanrs.s2a1s1 = mean(rewards(when.s2a1s1));
+    meanrs.s2a2s1 = mean(rewards(when.s2a2s1));
+    stdrs.all = std(rewards);
+    stdrs.s1 = std(rewards(when.s1));
+    stdrs.s2 = std(rewards(when.s2));
+    stdrs.s1a1 = std(rewards(when.s1a1));
+    stdrs.s1a2 = std(rewards(when.s1a2));
+    stdrs.s2a1 = std(rewards(when.s2a1));
+    stdrs.s2a2 = std(rewards(when.s2a2));
+    stdrs.s1a1s1 = std(rewards(when.s1a1s1));
+    stdrs.s1a1s2 = std(rewards(when.s1a1s2));
+    stdrs.s1a2s1 = std(rewards(when.s1a2s1));
+    stdrs.s1a2s2 = std(rewards(when.s1a2s2));
+    stdrs.s2a1s1 = std(rewards(when.s2a1s1));
+    stdrs.s2a2s1 = std(rewards(when.s2a2s1));
+    transprob.s1a1s1 = length(when.s1a1s1)/length(when.s1a1);
+    transprob.s1a1s2 = length(when.s1a1s2)/length(when.s1a1);
+    transprob.s1a2s1 = length(when.s1a2s1)/length(when.s1a2);
+    transprob.s1a2s2 = length(when.s1a2s2)/length(when.s1a2);
+    transprob.s2a1s1 = length(when.s2a1s1)/length(when.s2a1);
+    transprob.s2a2s1 = length(when.s2a2s1)/length(when.s2a2);
+
+    % games 3 and 4
+    if game == 3 | game == 4
+        binary.s3 = (states(1:end-1) == 3);
+        binary.s3a1 = (binary.s3 & (actions == 1));
+        binary.s3a2 = (binary.s3 & (actions == 2));
+        binary.s3a1s1 = (binary.s3a1 & (states(2:end) == 1));
+        binary.s3a2s1 = (binary.s3a2 & (states(2:end) == 1));
+        binary.s2a1s3 = (binary.s2a1 & (states(2:end) == 3));
+        binary.s2a2s3 = (binary.s2a2 & (states(2:end) == 3));
+        when.s3 = find(binary.s3);
+        when.s3a1 = find(binary.s3a1);
+        when.s3a2 = find(binary.s3a2);
+        when.s2a1s3 = find(binary.s2a1s3);
+        when.s2a2s3 = find(binary.s2a2s3);
+        when.s3a1s1 = find(binary.s3a1s1);
+        when.s3a2s1 = find(binary.s3a2s1);
+        meanrs.s3 = mean(rewards(when.s3));
+        meanrs.s3a1 = mean(rewards(when.s3a1));
+        meanrs.s3a2 = mean(rewards(when.s3a2));
+        meanrs.s2a1s3 = mean(rewards(when.s2a1s3));
+        meanrs.s2a2s3 = mean(rewards(when.s2a2s3));
+        meanrs.s3a1s1 = mean(rewards(when.s3a1s1));
+        meanrs.s3a2s1 = mean(rewards(when.s3a2s1));
+        stdrs.s3 = std(rewards(when.s3));
+        stdrs.s3a1 = std(rewards(when.s3a1));
+        stdrs.s3a2 = std(rewards(when.s3a2));
+        stdrs.s2a1s3 = std(rewards(when.s2a1s3));
+        stdrs.s2a2s3 = std(rewards(when.s2a2s3));
+        stdrs.s3a1s1 = std(rewards(when.s3a1s1));
+        stdrs.s3a2s1 = std(rewards(when.s3a2s1));
+        transprob.s2a1s3 = length(when.s2a1s3)/length(when.s2a1);
+        transprob.s2a2s3 = length(when.s2a2s3)/length(when.s2a2);
+        transprob.s3a1s1 = length(when.s3a1s1)/length(when.s3a1);
+        transprob.s3a2s1 = length(when.s3a2s1)/length(when.s3a2);
+    end
+    
+    summary.binary = binary;
+    summary.when = when;
+    summary.meanrs = meanrs;
+    summary.stdrs = stdrs;
+    summary.transprob = transprob;
+end % function - get_summary
