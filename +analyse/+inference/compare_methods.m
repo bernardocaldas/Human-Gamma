@@ -1,7 +1,7 @@
 function [ logprob gamma ] = compare_methods( trace,env,game )
 %COMPARE_METHODS Summary of this function goes here
 %   Detailed explanation goes here
-methods={'sarsa_softmax','sarsa_egreedy','qlearn_egreedy','qlearn_softmax','window_smooth'};
+methods={'window_smooth'}%,'sarsa_softmax','sarsa_egreedy','qlearn_egreedy','qlearn_softmax'};
 actions=trace.actions;
 states=trace.states;
 visit=states==1;
