@@ -3,7 +3,7 @@ markers = ['x','+','s','d','o'];
 lmethods=length(methods);
 % loglik=zeros(9,4,length(methods));
 for subject=1:9
-    for game=1:4
+    for game=3:4
         [model, sim, env ] = games.get(2,game)
         try
         trace=analyse.load_xdata(2,subject,game);
