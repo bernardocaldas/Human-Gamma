@@ -35,7 +35,7 @@ function env = get_env(xid,game,varargin)
         case 1
             % get gamma from immediate reward (reward indicates what gamma for policy switch)
 %             env.get_gamma = @(r) min(25/(r-25),1);
-            env.get_gamma = @(r,p) min(25/(r*p-25*p),1);
+            env.get_gamma = @(r,p) max(0,min(25/(r*p-25*p),1));
             %XXX has been verified on data
             env.reward_state = 2;
             env.reward_action = 1;
@@ -44,7 +44,7 @@ function env = get_env(xid,game,varargin)
             %env.get_gamma = @(r) min(0.25/(r-0.25),1);
             %XXX new analysis gives
 %             env.get_gamma = @(r) min(25/(100*r - 21),1);
-            env.get_gamma = @(r,p) min(-25/(10*p-100*p*r+11),1);
+            env.get_gamma = @(r,p) max(0,min(-25/(10*p-100*p*r+11),1));
             %XXX has been verified on data
             env.reward_state = 2;
             env.reward_action = 1;
@@ -53,7 +53,7 @@ function env = get_env(xid,game,varargin)
             % get gamma from immediate reward (reward indicates what gamma for policy switch)
             %XXX new analysis gives
 %             env.get_gamma = @(r) min(2*(sqrt(5*(r - 15)) + 5)/(r - 20),1);
-            env.get_gamma =@(r,p2,p3)min(-(5^(1/2)*(400*p2*p3-400*p3-120*p2+16*p3*r+5*p2^2-16*p2*p3*r+160)^(1/2)-5*p2+20)/(2*(p2-1)*(p3*r-25*p3+5)),1);
+            env.get_gamma =@(r,p2,p3)max(0,min(-(5^(1/2)*(400*p2*(1-p3)-400*(1-p3)-120*p2+16*(1-p3)*r+5*p2^2-16*p2*(1-p3)*r+160)^(1/2)-5*p2+20)/(2*(p2-1)*((1-p3)*r-25*(1-p3)+5)),1));
             %TODO Sort out which one of these are the best
             %%XXX it is in fact this@
             %env.get_gamma = @(r1,r2)  min(   -(1.0*(r1 + (4.0*r1*r2 - 3.0*r1^2)^(1/2)))/(2.0*r1 - 2.0*r2),1);
@@ -66,7 +66,7 @@ function env = get_env(xid,game,varargin)
             %env.get_gamma = @(r) min(((20.0*r - 3.0)^(1/2) + 1.0)/(10.0*r - 2.0),1);
             %XXX new analysis gives
 %             env.get_gamma = @(r) min((sqrt(17*(400*r - 51)) + 17)/(2*(100*r - 17)),1);
-            env.get_gamma =@(r,p2,p3)min(-((1700*p2*p3-1700*p3-714*p2+6800*p3*r+25*p2^2-6800*p2*p3*r+833)^(1/2)-5*p2+17)/(2*(p2-1)*(100*p3*r-25*p3+8)),1);
+            env.get_gamma =@(r,p2,p3)max(0,min(-((1700*p2*(1-p3)-1700*(1-p3)-714*p2+6800*(1-p3)*r+25*p2^2-6800*p2*(1-p3)*r+833)^(1/2)-5*p2+17)/(2*(p2-1)*(100*(1-p3)*r-25*(1-p3)+8)),1));
             env.reward_state = 3;
             env.reward_action = 2;
         otherwise
