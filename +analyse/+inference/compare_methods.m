@@ -1,7 +1,7 @@
 function [ logprob gamma ] = compare_methods( trace,env,game )
 %COMPARE_METHODS Summary of this function goes here
 %   Detailed explanation goes here
-methods={'window_smooth'}%,'sarsa_softmax','sarsa_egreedy','qlearn_egreedy','qlearn_softmax'};
+methods={'sarsa_softmax','sarsa_egreedy','qlearn_egreedy','qlearn_softmax','window_smooth'};
 actions=trace.actions;
 states=trace.states;
 visit=states==1;
@@ -12,7 +12,7 @@ lmethods=length(methods);
 for i=1:lmethods
     switch methods{i}
         case {'window_smooth','window_best','ratio_smooth','ratio_best'}
-            [logprob(i) probests domests]=analyse.inference.topdown_logprob(trace,'method',methods{i});
+            [logprob(i) probests domests]=analyse.inference.topdown_logprob(env,trace,'method',methods{i});
 %             xestimate=analyse.inference.get_x(varrewards,trace,domests);
 %             gamma(i)=env.get_gamma(xestimate,0,1);
             gamma(i)=analyse.inference.topdown_gamma(env, varrewards,trace,domests,probests);
