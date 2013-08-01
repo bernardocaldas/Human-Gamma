@@ -1,4 +1,4 @@
-function [ logprobability probests domests] = topdown_logprob( trace,varargin)
+function [ logprobability probests domests] = topdown_logprob( env,trace,varargin)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 states=trace.states;
@@ -8,7 +8,10 @@ probests=[];domests=[];
 method = kwargs.get('method','window');
 scheme = kwargs.get('scheme','harmonic');
 logprobability=0;
-probests=zeros(max(states),length(states)-1);
+probests=ones(max(states),length(states)-1);
+if env.numstates==3
+    probests(2,:)=zeros(1,length(states)-1);
+end
 domests=probests;
 switch method
     case {'window_smooth','ratio_smooth','evidence'}
