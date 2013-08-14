@@ -1,10 +1,10 @@
 function [model, sim, env ] = get(xid,game,varargin)
 
     kwargs = utils.dict(varargin{:});
+    env = games.get_env(xid,game,kwargs);
     if kwargs.iskey('varrewards')
         varrewards = kwargs('varrewards');
     else
-        env = games.get_env(xid,game,kwargs);
         varrewards = env.varrewards;
         %varrewards = source_varrewards(xid,game);
     end
@@ -19,6 +19,10 @@ function [model, sim, env ] = get(xid,game,varargin)
             [ model ] = games.Game3MDP(varrewards);
         case 4
             [ model ] = games.Game4MDP(varrewards);
+        case 5
+            [ model ] = games.Game5MDP(varrewards);
+        case 6
+            [ model ] = games.Game6MDP(varrewards);
         otherwise
             fprintf('xid %d game %d not available',xid,game);
         end
