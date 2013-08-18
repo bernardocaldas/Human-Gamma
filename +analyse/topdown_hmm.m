@@ -38,7 +38,7 @@ ms = MultiStart('MaxTime',300,'Display','off');
 [x,minscore] = run(ms,problem,20);
 
 % [minstds(1) gammas(1)]=get_gamma_gauss(minsigma,pswitch,rewards_visit,env,game,probests,indices_estimate);
-[minstds(1) gammas(1)]=hmm_logprob(x(1),x(2),x(3),x(4),actions(states==1),rewards_visit,indices_estimate,env,game);
+[logprob gamma]=hmm_logprob(x(1),x(2),x(3),x(4),actions(states==1),rewards_visit,indices_estimate,env,game);
 end
 
 function [logprob gamma]=hmm_logprob(sigma,m,s,p,actions,rewards_visit,indices_estimate,env,game)
