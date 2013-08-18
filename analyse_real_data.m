@@ -1,5 +1,5 @@
 markers = ['x','+','s','d','o'];
-gameset=[1 3 5 6];
+gameset=[5 6];
 correct_visits=0;
 correct_actions=0;
 for subject=1:101
