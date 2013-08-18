@@ -2,9 +2,15 @@ markers = ['x','+','s','d','o'];
 gameset=[1 3 5 6];
 correct_visits=0;
 correct_actions=0;
+<<<<<<< HEAD
 for subject=1:10
     for g=1:length(gameset)
         [model, sim, env ] = games.get(2,gameset(g))
+=======
+for subject=1:11
+    for game=5:6
+        [model, sim, env ] = games.get(2,game);
+>>>>>>> hmm
         try
             trace=analyse.load_xdata(2,subject,gameset(g));
             %             loglik(subject,game,i)=analyse.inference.topdown_logprob(trace,'method',methods{i})
