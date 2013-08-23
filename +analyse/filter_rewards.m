@@ -1,9 +1,15 @@
 function [filtered_rewards]= filter_rewards(method,sigma,rewards_visit)
 if strcmp(method,'gauss')==1
     windowsize =ceil(3*sigma);
-    y = linspace(-windowsize, 0, windowsize);
+    y = linspace(-windowsize+1, 0, windowsize);
     filter = exp(-y .^ 2 / (2 * sigma ^ 2));
     filter = filter / sum (filter); % normalize
+end
+if strcmp(method,'exp')==1
+    windowsize =ceil(3*sigma);
+    y = linspace(-windowsize+1, 0, windowsize);
+    filter = exp(y/sigma);
+    filter = filter / sum (filter);
 end
 rewards_visit=rewards_visit(:);
 filtered_rewards = rewards_visit';

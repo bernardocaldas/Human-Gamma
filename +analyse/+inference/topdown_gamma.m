@@ -28,26 +28,26 @@ end
 % rewards_visit=varrewards(visit&(actions==env.reward_action));
 
 
-% x0=1;
-% fitnessfn=@(x)get_gamma_gauss(x,pswitch,rewards_visit,indices,env,game,probests,indices_estimate);
-% lb=1;
-% ub=floor(length(rewards_visit)/10);
+x0=1;
+fitnessfn=@(x)get_gamma_gauss(x,pswitch,rewards_visit,env,game,probests,indices_estimate);
+lb=3;
+ub=floor(11);
 
-x0=[5 0.5 0.01];
-fitnessfn=@(x)get_gamma_logistic(x(1),x(2),x(3),pswitch,rewards_visit,env,game,probests,domests(1,states==1),indices_estimate);
-lb=[1 0 0.001];
-ub=[15 1 0.1];
+% x0=[5 0.5 0.01];
+% fitnessfn=@(x)get_gamma_logistic(x(1),x(2),x(3),pswitch,rewards_visit,env,game,probests,domests(1,states==1),indices_estimate);
+% lb=[1 0 0.001];
+% ub=[15 1 0.1];
 
 options = optimoptions('fmincon');
 options = optimoptions(options,'UseParallel','always');
 options = optimoptions(options,'Algorithm', 'active-set');
 problem = createOptimProblem('fmincon','x0',x0,'objective',fitnessfn,'lb',lb,'ub',ub,'options',options);
 gs = GlobalSearch('MaxTime',20,'Display','off');
-ms = MultiStart('MaxTime',150,'Display','off');
+ms = MultiStart('MaxTime',50,'Display','off');
 [x,minscore] = run(ms,problem,15);
 
-% [minstds(1) gammas(1)]=get_gamma_gauss(minsigma,pswitch,rewards_visit,env,game,probests,indices_estimate);
-[minstds(1) gammas(1)]=get_gamma_logistic(x(1),x(2),x(3),pswitch,rewards_visit,env,game,probests,domests,indices_estimate);
+[minstds(1) gammas(1)]=get_gamma_gauss(x,pswitch,rewards_visit,env,game,probests,indices_estimate);
+% [minstds(1) gammas(1)]=get_gamma_logistic(x(1),x(2),x(3),pswitch,rewards_visit,env,game,probests,domests,indices_estimate);
 
 
 [minstd minindex]=min(minstds);
@@ -104,19 +104,30 @@ end
 end
 function [score,avgamma]= get_gamma_gauss(sigma,pswitch,rewards_visit,env,game,probests,indices_estimate)
 try
-    filtered_rewards=analyse.filter_rewards('gauss',sigma,rewards_visit);
-    x=filtered_rewards(indices_estimate(pswitch));
+    filtered_rewards=analyse.filter_rewards('exp',sigma,rewards_visit);
+    indices_switch=indices_estimate(pswitch);
+    firsts=find(indices_switch==0);
+    indices_switch(firsts)=1;
+    x=filtered_rewards(indices_switch);
+    x(firsts)=0;
     for i=1:length(x)
-        if game==1||game==2||game==5
+        if game==1||game==2
             gamma(i)=env.get_gamma(x(i),probests(2,pswitch(i)));
         elseif game==3||game==4||game==6
             gamma(i)=env.get_gamma(x(i),probests(2,pswitch(i)),probests(3,pswitch(i)));
+        elseif game==5
+            gamma(i)=env.get_gamma(x(i),probests(2,1));
         end
     end
     gamma_dir1=gamma(1:2:end);
     gamma_dir2=gamma(2:2:end);
     avgamma=mean(gamma);
-    score=(std(gamma_dir1)+std(gamma_dir2))/((betapdf(avgamma,2,2)^2)*std(x));
+%     score=(std(gamma_dir1)+std(gamma_dir2)-std(x))%/((betapdf(avgamma,2,2)));
+   if game<5
+       score=(std(gamma));%/std(x);%/((betapdf(avgamma,2,2)));
+   else
+       score=(std(gamma))/std(x);
+   end
 catch err
     fprintf('Error!');
     score=+Inf;

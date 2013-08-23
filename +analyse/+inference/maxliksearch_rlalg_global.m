@@ -60,10 +60,10 @@ function [ analysis ] = maxliksearch_rlalg(trace,env,game,varargin)
         case 'egreedy'
             fitnessfn = @(x) agent_fitness(agenttype,numstates,numactions,trace,'policytype',policytype,'alpha',x(1),'gamma',x(2),'epsilon',x(3));
             %x0 = [0.1,0.7,0.1];
-            x0range = [ [0.01,0.95];[0.01 0.95];[0.05,0.5];];
+            x0range = [ [0.01,0.95];[0 1];[0.05,0.5];];
         case 'softmax'
             fitnessfn = @(x) agent_fitness(agenttype,numstates,numactions,trace,'policytype',policytype,'alpha',x(1),'gamma',x(2),'temperature',x(3));
-            x0range = [ [0.01,0.95];[0.01, 0.95];[0.05*10^((game==1||game==3)) 5*10^(2*(game==1||game==3))];];
+            x0range = [ [0.01,0.95];[0, 1];[0.05*10^((game==1||game==3)) 10*10^(2*(game==1||game==3))];];
         otherwise
             error('Unrecognised policytype');
         end
@@ -224,7 +224,7 @@ function [ score logprob ] = agent_fitness(agenttype,numstates,numactions,trace,
         score=score -log(betapdf(kwargs.get('alpha'),2,2));
     end
     if kwargs.iskey('gamma')
-        score=score - log(betapdf(kwargs.get('gamma'),2,2));
+        score=score - 2*log(betapdf(kwargs.get('gamma'),2,2));
     end
     if isnan(score)
         score=1e12;

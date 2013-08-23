@@ -1,7 +1,7 @@
 function [ logprob gamma ] = compare_methods( trace,env,game )
 %COMPARE_METHODS Summary of this function goes here
 %   Detailed explanation goes here
-methods={'hmm','window_smooth'}%,'sarsa_softmax','sarsa_egreedy','qlearn_egreedy','qlearn_softmax'};
+methods={'hmm','window_smooth','sarsa_softmax','sarsa_egreedy','qlearn_egreedy','qlearn_softmax'}%,};
 actions=trace.actions;
 states=trace.states;
 visit=states==1;
@@ -37,7 +37,7 @@ for i=1:lmethods
             [logprob(i) index_5]=max(analysis_5.logprobs);
             gamma(i)=analysis_5.gammas(index_5);
         case 'hmm'
-            [logprob(i) index_6]=analyse.topdown_hmm(env,game, varrewards,trace);
+            [logprob(i) gamma(i)]=analyse.topdown_hmm(env,game, varrewards,trace);
             
     end
 end
