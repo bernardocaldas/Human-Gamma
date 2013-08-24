@@ -1,4 +1,4 @@
-function [ gamma logprob ] = topdown_gamma(env,game, varrewards,trace,domests,probests)
+function [ gamma x ] = topdown_gamma(env,game, varrewards,trace,domests,probests)
 %GET_X Get the estimate of x at the switching points;
 %   Inputs: rewards_visit - Rewards at visit states:
 %           domests - Domininant policy at each visit of the visit states
@@ -40,24 +40,8 @@ ms = MultiStart('MaxTime',50,'Display','off');
 [x,minscore] = run(ms,problem,15);
 
 [minstds(1) gammas(1),params]=get_gamma_gauss(x,pswitch,rewards_visit,env,game,probests,indices_estimate);
-
-x0=1;
-fitnessfn=@(x)hmm_logprob(params{1},x,domests(1,states==1),params{2},indices_estimate,env,game);
-lb=0;
-if game<5
-    ub=10;
-else
-    ub=0.1
-end
-    
-options = optimoptions('fmincon');
-options = optimoptions(options,'UseParallel','always');
-options = optimoptions(options,'Algorithm', 'active-set');
-problem = createOptimProblem('fmincon','x0',x0,'objective',fitnessfn,'lb',lb,'ub',ub,'options',options);
-ms = MultiStart('MaxTime',50,'Display','off');
-[x,minscore] = run(ms,problem,15);
 % [minstds(1) gammas(1)]=get_gamma_logistic(x(1),x(2),x(3),pswitch,rewards_visit,env,game,probests,domests,indices_estimate);
-logprob = - hmm_logprob(params{1},x,domests(1,states==1),params{2},indices_estimate,env,game);
+logprob = hmm_logprob(params(1),s,domests(states==1),params(2),indices_estimate,env,game)
 
 [minstd minindex]=min(minstds);
 gamma=gammas(minindex);
@@ -126,12 +110,12 @@ try
     avgamma=mean(gamma);
 %     score=(std(gamma_dir1)+std(gamma_dir2)-std(x))%/((betapdf(avgamma,2,2)));
    if game<5
-       score=(std(gamma))/std(x);%/std(x);%/((betapdf(avgamma,2,2)));
+       score=(std(gamma));%/std(x);%/((betapdf(avgamma,2,2)));
    else
        score=(std(gamma))/std(x);
    end
-   params{1}=mean(x);
-   params{2}=filtered_rewards;
+   params(1)=mean(x);
+   params(2)=estimates;
    
 catch err
     fprintf('Error!');
@@ -182,17 +166,13 @@ for i=1:length(pswitch)
     
 end
 end
-function [logprob]=hmm_logprob(m,s,domests,filtered_rewards,indices_estimate,env,game)
+function [logprob]=hmm_logprob(m,s,domests,estimates_at_choice,indices_estimate,env,game)
 try
 if isnan(s)==0
-firsts=find(indices_estimate==0);
-indices_estimate(firsts)=1;
-estimates_at_choice=filtered_rewards(indices_estimate);
-estimates_at_choice(firsts)=0;
 transition=compute_transition(estimates_at_choice,m,s);
 logprob=0;
 for i=2:length(indices_estimate)
-    logprob=logprob+log(transition(2-domests(i-1),2-domests(i),i));
+    logprob=logprob+transition(domests(i-1),domests(i),i)
 end
 logprob=-logprob;
 else

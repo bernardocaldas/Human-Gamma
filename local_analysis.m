@@ -7,7 +7,7 @@ trueepsilon=0.1;
 agent = agents.discrete.get('sarsa',env.numstates,env.numactions,'policytype','egreedy','epsilon',trueepsilon,'gamma',truegamma,'alpha',truealpha);
 [ trace policytrace ] = analyse.sampling.synthetic_traces( agent, sim, 300 );
 gammas=linspace(0,1,100);
-parfor i=1:100
+parfor i=1:1000
     agent = agents.discrete.get('sarsa',env.numstates,env.numactions,'policytype','egreedy','epsilon',trueepsilon,'gamma',gammas(i),'alpha',truealpha);
     score(i) = agent.imitate_run(trace);
 end
